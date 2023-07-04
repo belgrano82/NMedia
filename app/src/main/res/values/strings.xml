@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">NMedia</string>
+    <string name="description_post_author_avatar">Post author avatar</string>
+    <string name="description_post_menu">Post menu</string>
+    <string name="description_post_like">Like</string>
+    <string name="description_post_share">Share</string>
+    <string name="menu_edit">Edit</string>
+    <string name="menu_remove">Remove</string>
+    <string name="post_text" />
+    <string name="error_empty_content">Content can\'t be empty</string>
+    <string name="description_post_save">Post save</string>
+    <string name="description_undo_editing">Undo editing</string>
+    <string name="description_post_view">Post view</string>
+    <string name="description_post_edit">Post edit</string>
+    <string name="post_likeCount">Post likeCount</string>
+    <string name="post_shareCount">Post shareCount</string>
+    <string name="chooser_share_post">Share post</string>
+    <string name="add_post">Add post</string>
+    <string name="description_post_video_cover">Video cover</string>
+    <string name="description_play_button">Play button</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
