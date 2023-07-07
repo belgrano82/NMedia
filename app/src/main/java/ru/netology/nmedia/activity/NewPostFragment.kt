@@ -1,9 +1,12 @@
 package ru.netology.nmedia.activity
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
@@ -24,6 +27,9 @@ class NewPostFragment : Fragment() {
         ownerProducer = ::requireParentFragment
     )
 
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var draftKey: String
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,12 +41,29 @@ class NewPostFragment : Fragment() {
             container,
             false
         )
+        sharedPreferences = requireActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        draftKey = "draftContent"
 
         arguments?.textArg
             ?.let(binding.edit::setText)
 
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    val draftText = binding.edit.text.toString()
+                    saveDraftText(draftText)
 
-val content = arguments?.getString("postContent")
+                    isEnabled = false
+                    requireActivity().onBackPressed()
+                }
+            })
+
+        val draftText = getDraftText()
+        binding.edit.setText(draftText)
+
+
+        val content = arguments?.getString("postContent")
         binding.apply {
             if (content != null) {
                 edit.setText(content)
@@ -60,11 +83,26 @@ val content = arguments?.getString("postContent")
             viewModel.save()
 
             val result2 = binding.edit.text
+
             setFragmentResult("editText2", bundleOf("textEdit2" to result2))
             AndroidUtils.hideKeyboard(requireView())
+            saveDraftText("")
+
             findNavController().navigateUp()
 
+
         }
+
         return binding.root
+    }
+
+    private fun saveDraftText(draftText: String) {
+        val editor = sharedPreferences.edit()
+        editor.putString(draftKey, draftText)
+        editor.apply()
+    }
+
+    private fun getDraftText(): String {
+        return sharedPreferences.getString(draftKey, "") ?: ""
     }
 }

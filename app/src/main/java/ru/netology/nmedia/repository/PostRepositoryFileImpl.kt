@@ -77,7 +77,7 @@ class PostRepositoryFileImpl(
                     id = nextId++,
                     author = "Me",
                     likedByMe = false,
-                    published = Calendar.getInstance().time
+                    published = Calendar.getInstance().time.toString()
 
 
                 )
