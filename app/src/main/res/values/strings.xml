@@ -19,5 +19,10 @@
     <string name="description_post_video_cover">Video cover</string>
     <string name="description_play_button">Play button</string>
     <string name="draft_content" translatable="false">draftContent</string>
+    <string name="google_play_unavailable">Google Api Unavailable</string>
+    <string name="notification_user_liked">User %1$s liked %2$s\'s post</string>
+    <string name="notification_new_post">User %1$s published new post</string>
+    <string name="channel_remote_name">Server notifications</string>
+    <string name="channel_remote_description">Notifications from remote server</string>
 
 </resources>
