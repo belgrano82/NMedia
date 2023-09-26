@@ -25,6 +25,8 @@ interface OnInteractionListener {
     fun onPlay(post: Post)
     fun onViewPost(post: Post)
 
+//    fun onRefresh(post: Post)
+
 }
 
 class PostsAdapter(
@@ -45,8 +47,11 @@ class PostViewHolder(
     private val binding: CardPostBinding,
     private val onInteractionListener: OnInteractionListener,
 ) : RecyclerView.ViewHolder(binding.root) {
+
+
     fun bind(post: Post) {
         binding.apply {
+
             author.text = post.author
             published.text = post.published.toString()
             content.text = post.content
@@ -66,9 +71,15 @@ class PostViewHolder(
                 onInteractionListener.onLike(post)
             }
 
+
+
             share.setOnClickListener {
                 onInteractionListener.onShare(post)
             }
+
+
+
+
 
 
             listOf(content, avatar, avatarVideo, published, author).forEach {

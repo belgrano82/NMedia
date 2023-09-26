@@ -47,7 +47,7 @@ class ViewPostFragment : Fragment() {
             viewsCount.text = post.views.toString()
 
             like.setOnClickListener {
-                viewModel.likeById(post.id)
+                viewModel.likeById(post)
                 post =
                     if (like.isChecked) post.copy(likes = post.likes + 1) else post.copy(likes = post.likes - 1)
                 like.text = formatNumber(post.likes)

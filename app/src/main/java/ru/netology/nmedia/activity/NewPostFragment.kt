@@ -81,16 +81,18 @@ class NewPostFragment : Fragment() {
         binding.ok.setOnClickListener {
             viewModel.changeContent(binding.edit.text.toString())
             viewModel.save()
+            AndroidUtils.hideKeyboard(requireView())
 
+        }
+
+        viewModel.postCreated.observe(viewLifecycleOwner) {
+            viewModel.loadPosts()
             val result2 = binding.edit.text
 
             setFragmentResult("editText2", bundleOf("textEdit2" to result2))
-            AndroidUtils.hideKeyboard(requireView())
             saveDraftText("")
 
             findNavController().navigateUp()
-
-
         }
 
         return binding.root

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
@@ -24,12 +25,23 @@ class FeedFragment : Fragment() {
         ownerProducer = ::requireParentFragment
     )
 
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         val binding = FragmentFeedBinding.inflate(
             inflater, container, false
         )
+
+        val refresh = binding.swipeRefresh
+
+        refresh.setOnRefreshListener {
+            viewModel.loadPosts()
+            refresh.isRefreshing = false
+        }
+
+
 
         val adapter = PostsAdapter(object : OnInteractionListener {
             override fun onEdit(post: Post) {
@@ -42,8 +54,10 @@ class FeedFragment : Fragment() {
                 viewModel.edit(post)
             }
 
+
+
             override fun onLike(post: Post) {
-                viewModel.likeById(post.id)
+                viewModel.likeById(post)
             }
 
             override fun onRemove(post: Post) {
@@ -59,6 +73,13 @@ class FeedFragment : Fragment() {
                     Intent.createChooser(intent, getString(R.string.description_play_button))
                 startActivity(playVideoIntent)
             }
+
+//            override fun onRefresh(post: Post) {
+//
+//                viewModel.loadPosts()
+//            }
+
+
 
             override fun onViewPost(post: Post) {
 
@@ -88,8 +109,11 @@ class FeedFragment : Fragment() {
             }
         })
         binding.list.adapter = adapter
-        viewModel.data.observe(viewLifecycleOwner) { posts ->
-            adapter.submitList(posts)
+        viewModel.data.observe(viewLifecycleOwner) { state ->
+            binding.errorGroup.isVisible = state.error
+            binding.empty.isVisible = state.empty
+            binding.progressbar.isVisible = state.loading
+            adapter.submitList(state.posts)
         }
 
         binding.fab.setOnClickListener {
