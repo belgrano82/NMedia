@@ -8,7 +8,7 @@ data class Post(
     var id: Long,
     val author: String,
     var content: String,
-    val published: String? = Calendar.getInstance().time.toString(),
+    val published: Long,
     val likes: Int,
     var shares: Int,
     val views: Int,

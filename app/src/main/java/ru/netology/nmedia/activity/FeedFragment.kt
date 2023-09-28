@@ -26,7 +26,6 @@ class FeedFragment : Fragment() {
     )
 
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -41,19 +40,22 @@ class FeedFragment : Fragment() {
             refresh.isRefreshing = false
         }
 
+        val retry = binding.retry
 
+        retry.setOnClickListener {
+            viewModel.loadPosts()
+        }
 
         val adapter = PostsAdapter(object : OnInteractionListener {
             override fun onEdit(post: Post) {
                 findNavController().navigate(R.id.action_feedFragment_to_newPostFragment,
-                Bundle().apply {
+                    Bundle().apply {
 
-                    putString("postContent", post.content)
+                        putString("postContent", post.content)
 
-                })
+                    })
                 viewModel.edit(post)
             }
-
 
 
             override fun onLike(post: Post) {
@@ -73,13 +75,6 @@ class FeedFragment : Fragment() {
                     Intent.createChooser(intent, getString(R.string.description_play_button))
                 startActivity(playVideoIntent)
             }
-
-//            override fun onRefresh(post: Post) {
-//
-//                viewModel.loadPosts()
-//            }
-
-
 
             override fun onViewPost(post: Post) {
 

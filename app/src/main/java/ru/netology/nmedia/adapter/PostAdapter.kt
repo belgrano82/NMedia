@@ -77,17 +77,11 @@ class PostViewHolder(
                 onInteractionListener.onShare(post)
             }
 
-
-
-
-
-
             listOf(content, avatar, avatarVideo, published, author).forEach {
                 it.setOnClickListener {
                     onInteractionListener.onViewPost(post)
                 }
             }
-
 
             menu.setOnClickListener {
                 PopupMenu(it.context, it).apply {
@@ -100,8 +94,6 @@ class PostViewHolder(
                             }
                             R.id.edit -> {
                                 onInteractionListener.onEdit(post)
-
-
                                 true
                             }
                             else -> false
