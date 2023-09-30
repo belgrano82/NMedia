@@ -5,6 +5,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import ru.netology.nmedia.db.AppDb
+import ru.netology.nmedia.dto.Attachment
+import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.FeedModel
 import ru.netology.nmedia.repository.PostRepository
@@ -12,9 +14,9 @@ import ru.netology.nmedia.repository.PostRepositoryRoomImpl
 import ru.netology.nmedia.util.SingleLiveEvent
 
 private val empty = Post(
-    id = 0, content = "", author = "Нетология", likedByMe = false,
-    likes = 0, published = 0, shares = 0, views = 0, video = ""
-)
+    id = 0, content = "", author = "Нетология", authorAvatar = "", likedByMe = false,
+    likes = 0, published = 0, shares = 0, views = 0, video = "", attachment = null)
+
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: PostRepository = PostRepositoryRoomImpl(
@@ -88,42 +90,29 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
         val old = _data.value?.posts.orEmpty()
 
-        if (post.likedByMe) {
-            repository.unLikeByIdAsync(post.id, object : PostRepository.CallBack<Post> {
-
-                override fun onSuccess(posts: Post) {
-                    val updatedPosts = old.map {
-                        if (it.id == post.id) {
-                            posts
-                        } else {
-                            it
-                        }
+        val callBack = object : PostRepository.CallBack<Post> {
+            override fun onSuccess(posts: Post) {
+                val updatedPosts = old.map {
+                    if (it.id == post.id) {
+                        posts
+                    } else {
+                        it
                     }
-                    _data.postValue(_data.value?.copy(posts = updatedPosts))
                 }
+                _data.postValue(_data.value?.copy(posts = updatedPosts))
+            }
 
-                override fun onError() {
-                    _data.postValue(_data.value?.copy(posts = old))
-                }
-            })
+            override fun onError() {
+                _data.postValue(_data.value?.copy(posts = old))
+            }
+
+        }
+
+        if (post.likedByMe) {
+            repository.unLikeByIdAsync(post.id, callBack)
 
         } else {
-            repository.likeByIdAsync(post.id, object : PostRepository.CallBack<Post> {
-                override fun onSuccess(posts: Post) {
-                    val updatedPosts = old.map {
-                        if (it.id == post.id) {
-                            posts
-                        } else {
-                            it
-                        }
-                    }
-                    _data.postValue(_data.value?.copy(posts = updatedPosts))
-                }
-
-                override fun onError() {
-                    _data.postValue(_data.value?.copy(posts = old))
-                }
-            })
+            repository.likeByIdAsync(post.id, callBack)
         }
     }
 

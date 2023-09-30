@@ -1,13 +1,16 @@
 package ru.netology.nmedia.db
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import androidx.room.*
+import com.google.gson.Gson
 import ru.netology.nmedia.dao.PostDao
+import ru.netology.nmedia.dto.Attachment
 import ru.netology.nmedia.entity.PostEntity
+import ru.netology.nmedia.util.AttachmentConverter
+
 
 @Database(entities = [PostEntity::class], version = 1, exportSchema = false)
+@TypeConverters(AttachmentConverter::class)
 abstract class AppDb: RoomDatabase() {
     abstract val postDao: PostDao
 

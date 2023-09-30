@@ -27,5 +27,6 @@
     <string name="empty">Empty</string>
     <string name="network_error">Network error</string>
     <string name="retry">Retry</string>
+    <string name="attachment">Attachment</string>
 
 </resources>

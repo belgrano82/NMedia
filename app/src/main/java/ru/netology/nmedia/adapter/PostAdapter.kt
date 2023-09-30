@@ -11,10 +11,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardPostBinding
+//import ru.netology.nmedia.dto.Attachment
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.dto.formatNumber
+import ru.netology.nmedia.util.load
+import java.util.*
 
 
 interface OnInteractionListener {
@@ -52,14 +56,24 @@ class PostViewHolder(
     fun bind(post: Post) {
         binding.apply {
 
+
             author.text = post.author
-            published.text = post.published.toString()
+            published.text = Date(post.published * 1000L).toString()
             content.text = post.content
             like.text = formatNumber(post.likes)
             share.text = formatNumber(post.shares)
             viewsCount.text = formatNumber(post.views)
             binding.author.text = post.author
             group.visibility = if (post.video.isNullOrBlank()) View.GONE else View.VISIBLE
+            if (post.attachment != null) {
+                attachment.visibility = View.VISIBLE
+                binding.attachment.load("http://10.0.2.2:9999/images/${post.attachment!!.url}")
+            } else {
+                attachment.visibility = View.GONE
+            }
+
+
+            binding.avatar.load("http://10.0.2.2:9999/avatars/${post.authorAvatar}", true)
 
             play.setOnClickListener {
                 onInteractionListener.onPlay(post)
@@ -70,7 +84,6 @@ class PostViewHolder(
             like.setOnClickListener {
                 onInteractionListener.onLike(post)
             }
-
 
 
             share.setOnClickListener {
