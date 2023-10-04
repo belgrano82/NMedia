@@ -80,7 +80,7 @@ class NewPostFragment : Fragment() {
 
         binding.ok.setOnClickListener {
             viewModel.changeContent(binding.edit.text.toString())
-            viewModel.save()
+            viewModel.save(context = requireContext())
             AndroidUtils.hideKeyboard(requireView())
 
         }

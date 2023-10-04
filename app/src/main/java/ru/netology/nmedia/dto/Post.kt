@@ -1,11 +1,5 @@
 package ru.netology.nmedia.dto
 
-import android.media.Image
-import java.util.Calendar
-import java.util.Date
-import androidx.room.TypeConverter
-import com.google.gson.Gson
-
 
 data class Post(
     var id: Long,
@@ -16,7 +10,7 @@ data class Post(
     val likes: Int,
     var shares: Int,
     val views: Int,
-    val likedByMe: Boolean,
+    var likedByMe: Boolean = false,
     val video: String? = null,
     var attachment: Attachment? = null
 )

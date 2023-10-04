@@ -4,17 +4,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardPostBinding
-//import ru.netology.nmedia.dto.Attachment
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.dto.formatNumber
 import ru.netology.nmedia.util.load
@@ -28,9 +22,6 @@ interface OnInteractionListener {
     fun onRemove(post: Post)
     fun onPlay(post: Post)
     fun onViewPost(post: Post)
-
-//    fun onRefresh(post: Post)
-
 }
 
 class PostsAdapter(
@@ -78,11 +69,12 @@ class PostViewHolder(
             play.setOnClickListener {
                 onInteractionListener.onPlay(post)
             }
-            like.isChecked = post.likedByMe
 
 
             like.setOnClickListener {
                 onInteractionListener.onLike(post)
+                like.isChecked = post.likedByMe
+
             }
 
 
@@ -90,11 +82,12 @@ class PostViewHolder(
                 onInteractionListener.onShare(post)
             }
 
-            listOf(content, avatar, avatarVideo, published, author).forEach {
-                it.setOnClickListener {
-                    onInteractionListener.onViewPost(post)
-                }
-            }
+//            listOf(content, avatar, avatarVideo, published, author).forEach {
+//                it.setOnClickListener {
+//                    onInteractionListener.onViewPost(post)
+//                }
+//            }
+
 
             menu.setOnClickListener {
                 PopupMenu(it.context, it).apply {

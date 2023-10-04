@@ -1,25 +1,27 @@
 package ru.netology.nmedia.viewmodel
 
+import android.app.AlertDialog
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import ru.netology.nmedia.db.AppDb
-import ru.netology.nmedia.dto.Attachment
-import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.FeedModel
 import ru.netology.nmedia.repository.PostRepository
-import ru.netology.nmedia.repository.PostRepositoryRoomImpl
+import ru.netology.nmedia.repository.PostRepositoryImpl
 import ru.netology.nmedia.util.SingleLiveEvent
+import ru.netology.nmedia.util.showErrorMessage
 
 private val empty = Post(
     id = 0, content = "", author = "Нетология", authorAvatar = "", likedByMe = false,
-    likes = 0, published = 0, shares = 0, views = 0, video = "", attachment = null)
+    likes = 0, published = 0, shares = 0, views = 0, video = "", attachment = null
+)
 
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository: PostRepository = PostRepositoryRoomImpl(
+    private val repository: PostRepository = PostRepositoryImpl(
         AppDb.getInstance(application).postDao
     )
 
@@ -41,17 +43,17 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         repository.getAllAsync(object : PostRepository.CallBack<List<Post>> {
 
             override fun onSuccess(posts: List<Post>) {
-                _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
+                _data.value = FeedModel(posts = posts, empty = posts.isEmpty())
             }
 
-            override fun onError() {
-                _data.postValue(FeedModel(error = true))
+            override fun onError(e: Exception) {
+                _data.value = FeedModel(error = true)
             }
         })
     }
 
 
-    fun save() {
+    fun save(context: Context) {
 
         edited.value?.let {
 
@@ -61,7 +63,11 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                     _postCreated.postValue(Unit)
                 }
 
-                override fun onError() {
+                override fun onError(e: Exception) {
+                    showErrorMessage(
+                        context,
+                        "Упс... Не удалось поставить/убрать лайк. Попробуйте ещё раз через несколько секунд!"
+                    )
                     edited.postValue(empty)
                 }
             })
@@ -86,9 +92,10 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         edited.value = edited.value?.copy(content = text)
     }
 
-    fun likeById(post: Post) {
+    fun likeById(post: Post, context: Context) {
 
         val old = _data.value?.posts.orEmpty()
+
 
         val callBack = object : PostRepository.CallBack<Post> {
             override fun onSuccess(posts: Post) {
@@ -100,10 +107,16 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                     }
                 }
                 _data.postValue(_data.value?.copy(posts = updatedPosts))
+
             }
 
-            override fun onError() {
+            override fun onError(e: Exception) {
                 _data.postValue(_data.value?.copy(posts = old))
+                showErrorMessage(
+                    context,
+                    "Упс... Не удалось поставить/убрать лайк. Попробуйте ещё раз через несколько секунд!"
+                )
+
             }
 
         }
@@ -120,21 +133,24 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     fun findById(id: Long): Post? = repository.findById(id)
 
-    fun removeById(id: Long) {
+    fun removeById(id: Long, context: Context) {
 
-        val old = _data.value?.posts.orEmpty()
+        val oldPosts = _data.value?.posts.orEmpty()
 
         repository.removeByIdAsync(id, object : PostRepository.CallBack<Unit> {
 
             override fun onSuccess(posts: Unit) {
-                _data.postValue(
-                    _data.value?.copy(posts = _data.value?.posts.orEmpty()
-                        .filter { it.id != id }
-                    ))
+
+                val updatedPosts = oldPosts.filter { it.id != id }
+                _data.value = _data.value?.copy(posts = updatedPosts)
             }
 
-            override fun onError() {
-                _data.postValue(_data.value?.copy(posts = old))
+            override fun onError(e: Exception) {
+                showErrorMessage(
+                    context,
+                    "Упс... Не удалось удалить пост. Попробуйте ещё раз через несколько секунд!"
+                )
+
             }
         })
     }

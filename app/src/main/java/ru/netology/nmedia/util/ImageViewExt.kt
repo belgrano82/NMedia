@@ -1,9 +1,11 @@
 package ru.netology.nmedia.util
 
+import android.annotation.SuppressLint
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import ru.netology.nmedia.R
 
+@SuppressLint("CheckResult")
 fun ImageView.load(url: String, isCircular: Boolean = false) {
 
     val glideRequest = Glide.with(this)

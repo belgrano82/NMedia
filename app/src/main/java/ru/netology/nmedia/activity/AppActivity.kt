@@ -23,7 +23,6 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
         super.onCreate(savedInstanceState)
 
 
-
         intent?.let {
             if (it.action != Intent.ACTION_SEND) {
 

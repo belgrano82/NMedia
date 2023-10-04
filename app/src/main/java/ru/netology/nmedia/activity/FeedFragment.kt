@@ -6,10 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import ru.netology.nmedia.R
@@ -59,11 +57,11 @@ class FeedFragment : Fragment() {
 
 
             override fun onLike(post: Post) {
-                viewModel.likeById(post)
+                viewModel.likeById(post, context = requireContext())
             }
 
             override fun onRemove(post: Post) {
-                viewModel.removeById(post.id)
+                viewModel.removeById(post.id, context = requireContext())
             }
 
             override fun onPlay(post: Post) {
@@ -118,6 +116,5 @@ class FeedFragment : Fragment() {
 
         return binding.root
     }
-
 
 }
